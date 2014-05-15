@@ -414,8 +414,13 @@ def resolve_embedded_fields(resource, req):
     enabled_embedded_fields = []
     for field in embedded_fields:
         # Reject bogus field names
-        if field in config.DOMAIN[resource]['schema']:
-            field_definition = config.DOMAIN[resource]['schema'][field]
+        schema = config.DOMAIN[resource]['schema'];
+        if 'datasource' in config.DOMAIN[resource] and \
+                'source' in config.DOMAIN[resource]['datasource']:
+            schema = config.DOMAIN[config.DOMAIN[resource]['datasource']['source']]
+
+        if field in schema:
+            field_definition = schema[field]
             if 'data_relation' in field_definition and \
                     field_definition['data_relation'].get('embeddable'):
                 # or could raise 400 here
