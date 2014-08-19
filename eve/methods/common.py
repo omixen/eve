@@ -397,7 +397,10 @@ def field_definition(resource, chained_fields):
 
     for field in subfields:
         try:
-            definition = definition['schema'][field]
+            if 'schema' in definition:
+                definition = definition['schema'][field]
+            elif 'datasource' in definition:
+                definition = definition['datasource']['source'][field]
             if definition['type'] == 'list':
                 definition = definition['schema']
         except KeyError:
@@ -411,7 +414,7 @@ def resolve_embedded_fields(resource, req):
     or from the resource definition is the request does not specify.
 
     :param resource: the resource name.
-    :param req: and instace of :class:`eve.utils.ParsedRequest`.
+    :param req: and instance of :class:`eve.utils.ParsedRequest`.
 
     .. versionchanged:: 0.5
        Enables subdocuments embedding. #389.
