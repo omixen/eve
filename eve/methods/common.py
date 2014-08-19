@@ -393,14 +393,14 @@ def field_definition(resource, chained_fields):
     .. versionadded 0.5
     """
     definition = config.DOMAIN[resource]
+    # if this is a subresource, use parent resource name
+    if 'datasource' in definition and 'source' in definition['datasource']:
+        definition = config.DOMAIN[definition['datasource']['source']]
     subfields = chained_fields.split('.')
 
     for field in subfields:
         try:
-            if 'schema' in definition:
-                definition = definition['schema'][field]
-            elif 'datasource' in definition:
-                definition = definition['datasource']['source'][field]
+            definition = definition['schema'][field]
             if definition['type'] == 'list':
                 definition = definition['schema']
         except KeyError:
